@@ -1,45 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="full-screen" content="yes"/>
-  <meta name="screen-orientation" content="portrait"/>
-  <meta name="viewport" content="user-scalable=no"/>
-  <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
   <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
   <script type="text/javascript">
     window.onload = function () {
       FBInstant.initializeAsync().then(function () {
-        for (let i in assets) {
-          FBInstant.setLoadingProgress(i / assets.length * 100);
-        }
-        FBInstant.startGameAsync().then(onStart);
+        FBInstant.startGameAsync();
       });
     };
   </script>
-
-  <link href="css/styles.css" rel="stylesheet"/>
   <audio autoplay loop>
     <source src="audio/song1.mp3" type="audio/mp3">
   </audio>
 </head>
+<body>
 
-<body scroll="no" style="overflow: hidden">
 <script>
   var fixed = document.querySelector('body');
   fixed.addEventListener('touchmove', function (e) {
     e.preventDefault();
   }, false);
+
+  var config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: { y: 200 }
+      }
+    },
+    scene: {
+      preload: preload,
+      create: create
+    }
+  };
+
+  var game = new Phaser.Game(config);
+
+  function preload ()
+  {
+    this.load.image('logo', 'images/ManoMano.png');
+    this.load.image('sky', 'images/space3.png');
+    this.load.image('red', 'images/red.png');
+  }
+
+  function create ()
+  {
+    this.add.image(400, 300, 'sky');
+
+    var particles = this.add.particles('red');
+
+    var emitter = particles.createEmitter({
+      speed: 100,
+      scale: { start: 1, end: 0 },
+      blendMode: 'ADD'
+    });
+
+    var logo = this.physics.add.image(400, 100, 'logo');
+
+    logo.setVelocity(100, 200);
+    logo.setBounce(1, 1);
+    logo.setCollideWorldBounds(true);
+
+    emitter.startFollow(logo);
+  }
 </script>
 
-<section id='home' class="home">
-  Home
-</section>
-
-<section id="game" class="game">
-  Game
-</section>
 </body>
 </html>
