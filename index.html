@@ -1,29 +1,591 @@
+<!--
+  Copyright (c) 2017-present, Facebook, Inc.
+  All rights reserved.
+
+  This source code is licensed under the license found in the
+  LICENSE file in the root directory of this source tree.
+-->
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Phaser 3 Facebook Instant Games Test 1</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, user-scalable=no, minimal-ui">
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <meta name="full-screen" content="yes"/>
-        <meta name="screen-orientation" content="portrait"/>
-        <style type="text/css">
-            * {
-                padding: 0;
-                margin: 0;
-            }
-            canvas {
-                touch-action-delay: none;
-                touch-action: none;
-                -ms-touch-action: none;
-            }
-        </style>
-        <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
-        <script src="lib/phaser-facebook-instant-games.js"></script>
-        <script src="src/share.js"></script>
-        <script src="src/preloader.js"></script>
-        <script src="src/boot.js"></script>
-    </head>
-    <body>
-    </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="viewport" content="user-scalable=no"/>
+  <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
+  <script type="text/javascript">
+    const assets = [
+      'img/asset1.png',
+      'img/asset2.png',
+      'img/asset3.png',
+      'img/asset4.png'
+    ];
+    window.onload = function() {
+      $('#info-section').hide();
+      FBInstant.initializeAsync().then(function() {
+        for (let i in assets) {
+          FBInstant.setLoadingProgress(i / assets.length * 100);
+        }
+        FBInstant.startGameAsync().then(onStart);
+      });
+    };
+
+    var globalScore = 0;
+
+    function onStart() {
+      $('#info-section').show();
+      var gscore = 0;
+      /* load score from leaderboard */
+      FBInstant
+        .getLeaderboardAsync('score')
+        .then(leaderboard => leaderboard.getPlayerEntryAsync())
+        .then(entry => {
+            var gscore = entry.getScore();
+            !gscore ? 0 : gscore;
+            document.querySelector('.counter-number').innerHTML = gscore;
+            globalScore = gscore;
+        }).catch(error => console.error(error));
+    }
+
+    test = () => {
+      const numberTouchText = document.querySelector('.counter-number')
+      if (globalScore) {
+        globalScore = globalScore + 1;
+      } else {
+        globalScore = 1;
+      }
+      numberTouchText.innerHTML = globalScore;
+      saveGame();
+    }
+
+    saveGame = () => {
+      var countToSave = parseInt(document.querySelector('.counter-number').innerHTML);
+      countToSave = countToSave + 1;
+      FBInstant
+        .getLeaderboardAsync('score')
+        .then(leaderboard => {
+          return leaderboard.setScoreAsync(countToSave);
+        })
+        .then(() => console.log('Score saved'))
+        .catch(error => console.error(error));
+
+      FBInstant.updateAsync({
+        action: 'LEADERBOARD',
+        name: 'score'
+      })
+        .then(() => console.log('Update Posted'))
+        .catch(error => console.error(error));
+    }
+
+    backHome = () => {
+      const game = document.querySelector('#game');
+      const home = document.querySelector('#home');
+      game.style.display = 'none';
+      home.style.display = 'flex';
+    }
+
+    lanchGame = () => {
+      const game = document.querySelector('#game');
+      const home = document.querySelector('#home');
+      game.style.display = 'flex';
+      home.style.display = 'none';
+    }
+
+    lanchChrono = (time, e, countNumber, loader, counter, countContent) => {
+      countNumber.innerHTML = time;
+      time = time - 1;
+      var refreshId = setInterval(function() {
+      countNumber.innerHTML = time;
+        if (time == 0) {
+          clearInterval(refreshId);
+          loader.style.display = 'none';
+          counter.style.display = 'none';
+          e.target.style.display = 'block';
+          countContent.style.display = 'none';
+        }
+        time = time - 1;
+      }, 1000);
+    }
+
+    saveSpeedScore = (time, scoreSaved, savedTime) => {
+      setTimeout(() => {
+        const newScore = parseInt(document.querySelector('.counter-number').innerText) - scoreSaved;
+        FBInstant
+        .getLeaderboardAsync(`${time}sec`)
+        .then(leaderboard => {
+          return leaderboard.setScoreAsync(newScore);
+        })
+        .then(() => console.log('Score saved'))
+        .catch(error => console.error(error));
+
+        FBInstant.updateAsync({
+          action: 'LEADERBOARD',
+          name: `${time}sec`
+        })
+        .then(() => console.log('Update Posted'))
+        .catch(error => console.error(error));
+        const speedResult = document.querySelector('.result-speed-mode');
+        speedResult.innerHTML = `Bravo tu as cliqué ${newScore} en ${savedTime} secondes !`;
+        setTimeout(() => {
+          speedResult.innerHTML = '';
+        }, 5000);
+      }, (time + 1)* 1000)
+    }
+
+    handleClickSpeed = (time, e) => {
+      const savedTime = time;
+      const scoreSaved = document.querySelector('.counter-number').innerText;
+      const counter = document.querySelector('.count-12');
+      const countNumber = document.querySelector('.counter-12');
+      const loader = document.querySelector('.lds-ring');
+      const countContent = document.querySelector('.count-content');
+      loader.style.display = 'inline-block';
+      counter.style.display = 'flex';
+      e.target.style.display = 'none';
+      countContent.style.display = 'flex';
+      lanchChrono(time, e, countNumber, loader, counter, countContent);
+      saveSpeedScore(time, scoreSaved, time);
+    }
+
+    speedTime = (time, e) => {
+      const overlay = document.querySelector('.ready-overlay');
+      const p = document.querySelector('.ready-overlay-value');
+      var timeDelay = 3;
+      p.innerHTML = timeDelay;
+      overlay.style.display = 'flex';
+      var refreshId = setInterval(function() {
+        timeDelay = timeDelay - 1;
+        p.innerHTML = timeDelay;
+        if (timeDelay == 0) {
+          clearInterval(refreshId);
+          overlay.style.display = 'none';
+          handleClickSpeed(time, e);
+        }
+      }, 1000);
+    }
+
+    const generateLeaderboard = (entry, leaderboard, classe, container) => {
+      const div = document.createElement('div');
+      const p = document.createElement('p');
+      const number = document.createElement('p');
+      const img = document.createElement('img');
+      const span = document.createElement('span');
+      const divText = document.createElement('div');
+      div.className = classe;
+      divText.className = 'leaderboard-div-text';
+      img.src = entry.getPlayer().getPhoto();
+      number.innerHTML = `${entry.getRank()}`;
+      p.innerHTML = `${entry.getPlayer().getName()}`;
+      span.innerHTML = `${entry.getScore()}`;
+      divText.appendChild(number);
+      divText.appendChild(img);
+      divText.appendChild(p);
+      div.appendChild(divText);
+      div.appendChild(span);
+      if (container) {
+        container.appendChild(div);
+        leaderboard.appendChild(container);
+      } else {
+        leaderboard.appendChild(div);
+      }
+    }
+
+    showStatForLeaderBoard = (name) => {
+      const leaderboard = document.querySelector('.leaderboard');
+      leaderboard.innerHTML = '';
+      FBInstant.getLeaderboardAsync(name)
+        .then(function(leaderboard) {
+          return leaderboard.getPlayerEntryAsync();
+        })
+        .then(function(entry) {
+            generateLeaderboard(entry, leaderboard, 'leaderboard-my-score');
+        });
+      FBInstant
+        .getLeaderboardAsync(name)
+        .then(leaderboard => leaderboard.getEntriesAsync(10, 0))
+        .then(entries => {
+          const div = document.createElement('div');
+          div.className = 'leaderboard-all-score';
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
+          }
+        }).catch(error => console.error(error));
+    }
+
+    stat = () => {
+      const statsContent = document.querySelector('.stats');
+      statsContent.style.display = 'block';
+      showStatForLeaderBoard('score');
+    }
+
+    closeLeaderBoard = () => {
+      const statsContent = document.querySelector('.stats');
+      statsContent.style.display = 'none';
+    }
+  </script>
+
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+      font-family: 'Teko', sans-serif;
+      position: fixed;
+      width: 100%;
+    }
+
+    .home {
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    background: url(./images/big-pouce.PNG);
+    background-color: #f4b2ce;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    flex-direction: column;
+    }
+
+    .game {
+      background-color: #f4b2ce;
+      margin: 0;
+      box-sizing: border-box;
+      width: 100%;
+      display: none;
+      box-sizing: border-box;
+    }
+
+    .counter-number {
+      font-size: 100px;
+      align-self: center;
+      align-items: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .test {
+      display: flex;
+      width: 100%;
+    }
+
+    .img-help {
+      position: absolute;
+      bottom: 0;
+      height: 45%;
+      left: 0;
+    }
+
+    .game-content {
+      flex-direction: column;
+      display: flex;
+      width: 100%
+    }
+
+    .button-content {
+      display: flex;
+      width: 100%;
+      height: 57%;
+    }
+
+    .button {
+      align-self: flex-end;
+      margin: 0 auto;
+      width: 150px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .menu-img {
+      flex: 1;
+      display: flex;
+      align-self: center;
+    }
+
+    .menu-img img {
+      display: block;
+      height: 50px;
+      align-self: flex-end;
+      margin: 0 30px 50px;
+      box-sizing: border-box;
+    }
+
+    .icon-menu {
+      display: block;
+      height: 50px  ;
+    }
+
+    .result-speed-mode {
+      text-align: center;
+      width: 100%;
+    }
+
+    .stats {
+      display: none;
+    }
+
+    .stats-menu {
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+      padding: 50px 0 10px;
+    }
+
+    .stats-menu img {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+    }
+
+    .ready-overlay {
+      background: black;
+      position: absolute;
+      display: none;
+      width: 100%;
+      justify-content: space-around;
+      padding: 50px 0;
+      height: 100%;
+    }
+
+    .ready-overlay-value {
+      color: white;
+      font-size: 80px;
+    }
+
+    .stats-menu span {
+      font-size: 18px;
+    }
+
+    .stats-menu p {
+      height: fit-content;
+      margin: 0;
+      font-size: 18px;
+    }
+  
+    .leaderboard {
+      width: 70%;
+      margin: 0 auto;
+      overflow: scroll;
+      height: 83%;
+    }
+
+    .leaderboard-div-text {
+      margin: 0;
+      display: flex;
+    }
+
+    .leaderboard-score {
+      text-align: left;
+      background: white;
+      border-radius: 5px;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 7px 0;
+    }
+
+    .leaderboard-my-score {
+      text-align: left;
+      background: white;
+      display: flex;
+      border-radius: 5px;
+      padding: 5px 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 7px 0;
+    }
+
+    .leaderboard p {
+      font-size: 18px;
+      margin: 0 10px 0 5px;
+    }
+
+    .leaderboard-all-score {
+      height: 85%;
+      overflow: scroll;
+    }
+
+    .leaderboard img {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+    }
+
+    .leaderboard-my-score {
+      margin: 25px 0 0 0;
+    }
+
+    .stats-content {    
+      background: #f4b2ce;
+      box-sizing: border-box;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    html {
+      height: 100%;
+    }
+    body {
+      min-height: 100%;
+    }
+    
+    .lds-ring {
+      display: none;
+      position: relative;
+      width: 50px;
+      height: 50px;
+    }
+    .lds-ring div {
+      box-sizing: border-box;
+      display: block;
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      margin: 8px;
+      border: 3px solid #000000;
+      border-radius: 50%;
+      animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      border-color: #000000 transparent transparent transparent;
+    }
+    .lds-ring div:nth-child(1) {
+      animation-delay: -0.45s;
+    }
+    .lds-ring div:nth-child(2) {
+      animation-delay: -0.3s;
+    }
+    .lds-ring div:nth-child(3) {
+      animation-delay: -0.15s;
+    }
+    @keyframes lds-ring {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .count-content {
+      display: none;   
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      margin-top: 6px;
+    }
+
+    .count-12 {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      height: 56px;
+    }
+
+    .counter-12 {
+      font-size: 15px;
+    }
+
+    </style>
+
+    <audio autoplay loop>
+      <source src="audio/song1.mp3" type="audio/mp3">
+    </audio>
+</head>
+
+<body scroll="no" style="overflow: hidden">
+  <script>
+      var fixed = document.querySelector('body');
+    fixed.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    }, false);
+  </script>
+  <section id='home' class="home">
+      <div class="stats">
+        <!-- <div class="stats-menu-overlay"></div> -->
+        <div class="stats-content">
+          <div class="stats-menu">
+            <img src="images/score-full.png" onclick="showStatForLeaderBoard('score');">
+            <img src="images/time-full.png" onclick="showStatForLeaderBoard('10sec');">
+            <!-- <p onclick="showStatForLeaderBoard('30sec');">30 Sec</p> -->
+            <img src="images/retour-full.png" onclick="closeLeaderBoard()">
+          </div>
+          <div class="leaderboard"></div>
+        </div>
+      </div>
+      <div class="button-content">
+          <img src="./images/button.png" onclick="lanchGame();" alt="button" class="button">
+      </div>
+      <div class="menu-img">
+        <!-- <img src="./images/option.png" alt="options"> -->
+        <!-- <img src="./images/share.png" alt="share"> -->
+        <!-- <img src="./images/trophe.png" alt="trophe"> -->
+        <img onclick="stat();" src="./images/stat.png" alt="stat">
+      </div>
+  </section>
+  <section id="game" class="game" onclick="test();">
+    <div class="game-content">
+        <div class="ready-overlay">
+          <p class="ready-overlay-value"></p>
+        </div>
+        <div class="menu">
+            <div class="menu-item">
+                <p onclick="saveGame();">Save Game</p>
+                <div onclick="speedTime(10, event);">
+                  <img class="icon-menu" src="./images/10.png" alt="10 secondes">
+                  <div class="count-content">
+                      <div class="count-12" style="position: absolute;">
+                        <p class="counter-12"></p>
+                      </div>
+                      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                  </div>
+                </div>
+                <!-- <div onclick="speedTime(30, event);">
+                  <img class="icon-menu" src="./images/30.png" alt="30 secondes">
+                </div> -->
+            </div>
+            <div class="menu-item">
+                <div onclick="backHome();">
+                  <img class="icon-menu" src="./images/home.png" alt="home">
+                </div>
+            </div>
+        </div>
+        <div>
+            <p class="result-speed-mode"></p>
+        </div>
+        <div class="test">
+          <p class="counter-number">0</p>
+        </div>
+    </div>
+    <img src="./images/pouce.PNG" alt="pouce" class="img-help">
+  </section>
+</body>
 </html>
