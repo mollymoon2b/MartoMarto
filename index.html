@@ -8,17 +8,9 @@
   <meta name="viewport" content="user-scalable=no"/>
   <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
   <script type="text/javascript">
-    const assets = [
-      'img/asset1.png',
-      'img/asset2.png',
-      'img/asset3.png',
-      'img/asset4.png'
-    ];
     window.onload = function () {
-      $('#info-section').hide();
       FBInstant.initializeAsync().then(function () {
         for (let i in assets) {
           FBInstant.setLoadingProgress(i / assets.length * 100);
@@ -26,218 +18,9 @@
         FBInstant.startGameAsync().then(onStart);
       });
     };
-
-    var globalScore = 0;
-
-    function onStart() {
-      $('#info-section').show();
-      var gscore = 0;
-      /* load score from leaderboard */
-      FBInstant
-        .getLeaderboardAsync('score')
-        .then(leaderboard => leaderboard.getPlayerEntryAsync())
-        .then(entry => {
-          var gscore = entry.getScore();
-          !gscore ? 0 : gscore;
-          document.querySelector('.counter-number').innerHTML = gscore;
-          globalScore = gscore;
-        }).catch(error => console.error(error));
-    }
-
-    test = () => {
-      const numberTouchText = document.querySelector('.counter-number');
-      if (globalScore) {
-        globalScore = globalScore + 1;
-      } else {
-        globalScore = 1;
-      }
-      numberTouchText.innerHTML = globalScore;
-      saveGame();
-    };
-
-    saveGame = () => {
-      var countToSave = parseInt(document.querySelector('.counter-number').innerHTML);
-      countToSave = countToSave + 1;
-      FBInstant
-        .getLeaderboardAsync('score')
-        .then(leaderboard => {
-          return leaderboard.setScoreAsync(countToSave);
-        })
-        .then(() => console.log('Score saved'))
-        .catch(error => console.error(error));
-
-      FBInstant.updateAsync({
-        action: 'LEADERBOARD',
-        name: 'score'
-      })
-        .then(() => console.log('Update Posted'))
-        .catch(error => console.error(error));
-    };
-
-    backHome = () => {
-      const game = document.querySelector('#game');
-      const home = document.querySelector('#home');
-      game.style.display = 'none';
-      home.style.display = 'flex';
-    };
-
-    lanchGame = () => {
-      const game = document.querySelector('#game');
-      const home = document.querySelector('#home');
-      game.style.display = 'flex';
-      home.style.display = 'none';
-    };
-
-    lanchChrono = (time, e, countNumber, loader, counter, countContent) => {
-      countNumber.innerHTML = time;
-      time = time - 1;
-      var refreshId = setInterval(function () {
-        countNumber.innerHTML = time;
-        if (time == 0) {
-          clearInterval(refreshId);
-          loader.style.display = 'none';
-          counter.style.display = 'none';
-          e.target.style.display = 'block';
-          countContent.style.display = 'none';
-        }
-        time = time - 1;
-      }, 1000);
-    };
-
-    saveSpeedScore = (time, scoreSaved, savedTime) => {
-      setTimeout(() => {
-        const newScore = parseInt(document.querySelector('.counter-number').innerText) - scoreSaved;
-        FBInstant
-          .getLeaderboardAsync(`${time}sec`)
-          .then(leaderboard => {
-            return leaderboard.setScoreAsync(newScore);
-          })
-          .then(() => console.log('Score saved'))
-          .catch(error => console.error(error));
-
-        FBInstant.updateAsync({
-          action: 'LEADERBOARD',
-          name: `${time}sec`
-        })
-          .then(() => console.log('Update Posted'))
-          .catch(error => console.error(error));
-        const speedResult = document.querySelector('.result-speed-mode');
-        speedResult.innerHTML = `Bravo tu as cliqué ${newScore} en ${savedTime} secondes !`;
-        setTimeout(() => {
-          speedResult.innerHTML = '';
-        }, 5000);
-      }, (time + 1) * 1000);
-    };
-
-    handleClickSpeed = (time, e) => {
-      const savedTime = time;
-      const scoreSaved = document.querySelector('.counter-number').innerText;
-      const counter = document.querySelector('.count-12');
-      const countNumber = document.querySelector('.counter-12');
-      const loader = document.querySelector('.lds-ring');
-      const countContent = document.querySelector('.count-content');
-      loader.style.display = 'inline-block';
-      counter.style.display = 'flex';
-      e.target.style.display = 'none';
-      countContent.style.display = 'flex';
-      lanchChrono(time, e, countNumber, loader, counter, countContent);
-      saveSpeedScore(time, scoreSaved, time);
-    };
-
-    speedTime = (time, e) => {
-      const overlay = document.querySelector('.ready-overlay');
-      const p = document.querySelector('.ready-overlay-value');
-      var timeDelay = 3;
-      p.innerHTML = timeDelay;
-      overlay.style.display = 'flex';
-      var refreshId = setInterval(function () {
-        timeDelay = timeDelay - 1;
-        p.innerHTML = timeDelay;
-        if (timeDelay == 0) {
-          clearInterval(refreshId);
-          overlay.style.display = 'none';
-          handleClickSpeed(time, e);
-        }
-      }, 1000);
-    };
-
-    const generateLeaderboard = (entry, leaderboard, classe, container) => {
-      const div = document.createElement('div');
-      const p = document.createElement('p');
-      const number = document.createElement('p');
-      const img = document.createElement('img');
-      const span = document.createElement('span');
-      const divText = document.createElement('div');
-      div.className = classe;
-      divText.className = 'leaderboard-div-text';
-      img.src = entry.getPlayer().getPhoto();
-      number.innerHTML = `${entry.getRank()}`;
-      p.innerHTML = `${entry.getPlayer().getName()}`;
-      span.innerHTML = `${entry.getScore()}`;
-      divText.appendChild(number);
-      divText.appendChild(img);
-      divText.appendChild(p);
-      div.appendChild(divText);
-      div.appendChild(span);
-      if (container) {
-        container.appendChild(div);
-        leaderboard.appendChild(container);
-      } else {
-        leaderboard.appendChild(div);
-      }
-    };
-
-    showStatForLeaderBoard = (name) => {
-      const leaderboard = document.querySelector('.leaderboard');
-      leaderboard.innerHTML = '';
-      FBInstant.getLeaderboardAsync(name)
-        .then(function (leaderboard) {
-          return leaderboard.getPlayerEntryAsync();
-        })
-        .then(function (entry) {
-          generateLeaderboard(entry, leaderboard, 'leaderboard-my-score');
-        });
-      FBInstant
-        .getLeaderboardAsync(name)
-        .then(leaderboard => leaderboard.getEntriesAsync(10, 0))
-        .then(entries => {
-          const div = document.createElement('div');
-          div.className = 'leaderboard-all-score';
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-          for (var i = 0; i < entries.length; i++) {
-            generateLeaderboard(entries[i], leaderboard, 'leaderboard-score', div);
-          }
-        }).catch(error => console.error(error));
-    };
-
-    stat = () => {
-      const statsContent = document.querySelector('.stats');
-      statsContent.style.display = 'block';
-      showStatForLeaderBoard('score');
-    };
-
-    closeLeaderBoard = () => {
-      const statsContent = document.querySelector('.stats');
-      statsContent.style.display = 'none';
-    };
   </script>
 
   <link href="css/styles.css" rel="stylesheet"/>
-  <link href="css/styles2.css" rel="stylesheet"/>
   <audio autoplay loop>
     <source src="audio/song1.mp3" type="audio/mp3">
   </audio>
@@ -250,69 +33,13 @@
     e.preventDefault();
   }, false);
 </script>
+
 <section id='home' class="home">
-  <div class="stats">
-    <!-- <div class="stats-menu-overlay"></div> -->
-    <div class="stats-content">
-      <div class="stats-menu">
-        <img src="images/score-full.png" onclick="showStatForLeaderBoard('score');">
-        <img src="images/time-full.png" onclick="showStatForLeaderBoard('10sec');">
-        <!-- <p onclick="showStatForLeaderBoard('30sec');">30 Sec</p> -->
-        <img src="images/retour-full.png" onclick="closeLeaderBoard()">
-      </div>
-      <div class="leaderboard"></div>
-    </div>
-  </div>
-  <div class="button-content">
-    <img src="./images/button.png" onclick="lanchGame();" alt="button" class="button">
-  </div>
-  <div class="menu-img">
-    <!-- <img src="./images/option.png" alt="options"> -->
-    <!-- <img src="./images/share.png" alt="share"> -->
-    <!-- <img src="./images/trophe.png" alt="trophe"> -->
-    <img onclick="stat();" src="./images/stat.png" alt="stat">
-  </div>
+  Home
 </section>
-<section id="game" class="game" onclick="test();">
-  <div class="game-content">
-    <div class="ready-overlay">
-      <p class="ready-overlay-value"></p>
-    </div>
-    <div class="menu">
-      <div class="menu-item">
-        <p onclick="saveGame();">Save Game</p>
-        <div onclick="speedTime(10, event);">
-          <img class="icon-menu" src="./images/10.png" alt="10 secondes">
-          <div class="count-content">
-            <div class="count-12" style="position: absolute;">
-              <p class="counter-12"></p>
-            </div>
-            <div class="lds-ring">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </div>
-        <!-- <div onclick="speedTime(30, event);">
-          <img class="icon-menu" src="./images/30.png" alt="30 secondes">
-        </div> -->
-      </div>
-      <div class="menu-item">
-        <div onclick="backHome();">
-          <img class="icon-menu" src="./images/home.png" alt="home">
-        </div>
-      </div>
-    </div>
-    <div>
-      <p class="result-speed-mode"></p>
-    </div>
-    <div class="test">
-      <p class="counter-number">0</p>
-    </div>
-  </div>
-  <img src="./images/pouce.PNG" alt="pouce" class="img-help">
+
+<section id="game" class="game">
+  Game
 </section>
 </body>
 </html>
