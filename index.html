@@ -1,73 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
-  <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
-  <script type="text/javascript">
-    window.onload = function () {
-      FBInstant.initializeAsync().then(function () {
-        FBInstant.startGameAsync();
-      });
-    };
-  </script>
-  <audio autoplay loop>
-    <source src="audio/song1.mp3" type="audio/mp3">
-  </audio>
+    <meta charset="utf-8">
+    <title>MartoMarto</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="yes" />
+    <meta name="screen-orientation" content="portrait" />
+    <style>
+        body {
+            padding: 0px;
+            margin: 0;
+        }
+    </style>
+    <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
 </head>
 <body>
-
-<script>
-  var fixed = document.querySelector('body');
-  fixed.addEventListener('touchmove', function (e) {
-    e.preventDefault();
-  }, false);
-
-  var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-      default: 'arcade',
-      arcade: {
-        gravity: { y: 200 }
-      }
-    },
-    scene: {
-      preload: preload,
-      create: create
-    }
-  };
-
-  var game = new Phaser.Game(config);
-
-  function preload ()
-  {
-    this.load.image('logo', 'images/ManoMano.png');
-    this.load.image('sky', 'images/space3.png');
-    this.load.image('red', 'images/red.png');
-  }
-
-  function create ()
-  {
-    this.add.image(400, 300, 'sky');
-
-    var particles = this.add.particles('red');
-
-    var emitter = particles.createEmitter({
-      speed: 100,
-      scale: { start: 1, end: 0 },
-      blendMode: 'ADD'
-    });
-
-    var logo = this.physics.add.image(400, 100, 'logo');
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(logo);
-  }
-</script>
-
 </body>
 </html>
