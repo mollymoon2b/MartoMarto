@@ -24,12 +24,35 @@ export default class GameScene extends Phaser.Scene {
     this.graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00ff00 }, fillStyle: { color: 0xff0000 }});
 
     // const nail = this.add.image(0, 0, 'nail');
-    this.nail = this.add.image(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
+    this.nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
     this.hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
     // Not effective @joss
     // nail.anchor.setTo(0.5);
     // nail.reset(Math.round(window.innerWidth / 2), window.innerHeight - nail.height);
+
+    this.nailOriginX = 0.5;
+    this.nailOriginY = 0.5;
+    // will be dynamic @eliam
+    let velocity = 0.05;
+    // Use the right event @eliam
+    const clickHandler = (gameObject, velocity) => {
+      if(this.nailOriginY <= 0.15) {
+        this.nail.off('clicked', clickHandler);
+      } else {
+        this.nailOriginY -= velocity;
+        this.nailOriginY = Math.round(this.nailOriginY * 100) / 100;
+        console.log(this.nailOriginY)
+        this.nail.setOrigin(this.nailOriginX, this.nailOriginY);
+      }
+    }
+
+    this.nail.setInteractive();
+    this.nail.on('clicked', clickHandler, this);
+    this.input.on('gameobjectup',  (pointer, gameObject) =>
+    {
+      gameObject.emit('clicked', gameObject, velocity);
+    }, this);
   }
 
   update() {
