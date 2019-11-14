@@ -20,11 +20,12 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // WIP @pierre
-    this.hammer = this.add.image(Math.round(window.innerWidth / 3), 100, 'hammer');
     this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
+    this.graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00ff00 }, fillStyle: { color: 0xff0000 }});
 
     // const nail = this.add.image(0, 0, 'nail');
-    const nail = this.add.image(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
+    this.nail = this.add.image(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
+    this.hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
     // Not effective @joss
     // nail.anchor.setTo(0.5);
@@ -32,18 +33,29 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
+    let deltaAngle = 0;
+
     if (this.directionOfRotation === DirectionOfRotationEnum.POSITIVE) {
       if (this.hammer.angle < POSITIVE_ANGLE_LIMIT) {
-        this.hammer.angle += ANGLE_ROTATION_STEP;
+        deltaAngle = ANGLE_ROTATION_STEP;
       } else {
         this.directionOfRotation = DirectionOfRotationEnum.NEGATIVE;
       }
     } else {
       if (this.hammer.angle > NEGATIVE_ANGLE_LIMIT) {
-        this.hammer.angle -= ANGLE_ROTATION_STEP;
+        deltaAngle = -ANGLE_ROTATION_STEP;
       } else {
         this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
       }
     }
+    this.hammer.angle += deltaAngle * 1.5;
+
+    const rotationCenter = {
+      x: this.nail.x - 230,
+      y: this.nail.y - Math.round(this.nail.height / 2)
+    };
+    Phaser.Actions.RotateAround([this.hammer], rotationCenter, deltaAngle / 180 * Math.PI);
+    this.graphics.fillStyle(0xff00ff);
+    this.graphics.fillRect(rotationCenter.x - 1, rotationCenter.y - 1, 2, 2);
   }
 }
