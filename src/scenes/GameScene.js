@@ -16,8 +16,7 @@ export default class GameScene extends Phaser.Scene {
   create() {
     // WIP @pierre
     this.hammer = this.add.image(Math.round(window.innerWidth / 3), 100, 'hammer');
-    this.directionOfRotation = DirectionOfRotationEnum.POSITIVE
-
+    this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
 
     // const nail = this.add.image(0, 0, 'nail');
     const nail = this.add.image(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
@@ -28,23 +27,23 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    // console.log(this.hammer.angle);
-    // console.log(this.directionOfRotation);
+    let POSITIVE_ANGLE_LIMIT = 90;
+    let NEGATIVE_ANGLE_LIMIT = -90;
+    let ANGLE_ROTATION_STEP = 1;
+
     if (this.directionOfRotation === DirectionOfRotationEnum.POSITIVE) {
-      if (this.hammer.angle < 90) {
-        this.hammer.angle += 1;
+      if (this.hammer.angle < POSITIVE_ANGLE_LIMIT) {
+        this.hammer.angle += ANGLE_ROTATION_STEP;
       }
-      if (this.hammer.angle >= 90) {
-        console.log('boum +');
+      else {
         this.directionOfRotation = DirectionOfRotationEnum.NEGATIVE;
       }
     }
-    if (this.directionOfRotation === DirectionOfRotationEnum.NEGATIVE) {
-      if (this.hammer.angle > -90) {
-        this.hammer.angle -= 1;
+    else {
+      if (this.hammer.angle > NEGATIVE_ANGLE_LIMIT) {
+        this.hammer.angle -= ANGLE_ROTATION_STEP;
       }
-      if (this.hammer.angle <= -90) {
-        console.log('boum -');
+      else {
         this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
       }
     }
