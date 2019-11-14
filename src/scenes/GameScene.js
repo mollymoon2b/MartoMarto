@@ -2,6 +2,11 @@ import 'phaser';
 import hammer from '../assets/hammer.png';
 import nail from '../assets/nail.png';
 import DirectionOfRotationEnum from './DirectionOfRotationEnum';
+import {
+  POSITIVE_ANGLE_LIMIT,
+  NEGATIVE_ANGLE_LIMIT,
+  ANGLE_ROTATION_STEP
+} from './hammer-settings';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -27,23 +32,16 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    let POSITIVE_ANGLE_LIMIT = 90;
-    let NEGATIVE_ANGLE_LIMIT = -90;
-    let ANGLE_ROTATION_STEP = 1;
-
     if (this.directionOfRotation === DirectionOfRotationEnum.POSITIVE) {
       if (this.hammer.angle < POSITIVE_ANGLE_LIMIT) {
         this.hammer.angle += ANGLE_ROTATION_STEP;
-      }
-      else {
+      } else {
         this.directionOfRotation = DirectionOfRotationEnum.NEGATIVE;
       }
-    }
-    else {
+    } else {
       if (this.hammer.angle > NEGATIVE_ANGLE_LIMIT) {
         this.hammer.angle -= ANGLE_ROTATION_STEP;
-      }
-      else {
+      } else {
         this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
       }
     }
