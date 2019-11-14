@@ -10,11 +10,48 @@
     <style>
         body {
             padding: 0px;
+            text-align: center;
             margin: 0;
+        }
+
+        .logo {
+            margin: 48px auto 0;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo img {
+            width: 315px;
+        }
+
+        .lanch-game {
+            margin: 0 auto;
+            padding: 14px 12px;
+            color: white;
+            background-color: rgb(29, 60, 135);
+            border: 1px solid rgb(29, 60, 135);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 24px;
+            width: 315px;
+        }
+        .menu-game {
+            display: none;
         }
     </style>
     <script src="https://connect.facebook.net/en_US/fbinstant.6.2.js"></script>
 </head>
 <body>
+    <div id="#menu" class="menu">
+        <div class="logo">
+            <img src="logo.png" alt="logo">
+        </div>
+        <button class="lanch-game">Jouer</button>
+    </div>
+    <div id="#menu-game" class="menu-game">
+        <button class="back-button">Back</button>
+        <button class="relunch-button">Relancer</button>
+        <button class="save-button">Save</button>
+    </div>
 </body>
 </html>

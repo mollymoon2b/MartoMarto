@@ -35,7 +35,7 @@ module.exports = {
       WEBGL_RENDERER: JSON.stringify(true),
       PLUGIN_FBINSTANT: JSON.stringify(true),
     }),
-    new CopyWebpackPlugin(['src/fbapp-config.json']),
+    new CopyWebpackPlugin(['src/fbapp-config.json', 'src/assets/logo.png']),
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
