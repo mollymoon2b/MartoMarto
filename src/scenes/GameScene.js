@@ -1,7 +1,6 @@
 import 'phaser';
-import logo from '../assets/ManoMano.png';
-import sky from '../assets/space3.png';
-import red from '../assets/red.png';
+import hammer from '../assets/hammer.png';
+import nail from '../assets/nail.png';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -9,28 +8,14 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('logo', logo);
-    this.load.image('sky', sky);
-    this.load.image('red', red);
+    this.load.image('hammer', hammer);
+    this.load.image('nail', nail);
   }
 
   create() {
-    this.add.image(400, 300, 'sky');
-
-    const particles = this.add.particles('red');
-
-    const emitter = particles.createEmitter({
-      speed: 100,
-      scale: { start: 1, end: 0 },
-      blendMode: 'ADD'
-    });
-
-    const logo = this.physics.add.image(400, 100, 'logo');
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(logo);
+    this.add.image(0, 0, 'hammer');
+    const nail = this.add.image(0, 0, 'nail');
+    nail.anchor.setTo(0.5);
+    // nail.reset(Math.round(window.innerWidth / 2), window.innerHeight - nail.height);
   }
 }
