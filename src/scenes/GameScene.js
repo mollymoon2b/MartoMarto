@@ -18,7 +18,7 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // init scene
-    const nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
+    const nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
 
     const moveHammer = ratio => {
@@ -27,11 +27,16 @@ export default class GameScene extends Phaser.Scene {
       hammer.x = nail.x + x;
       hammer.y = nail.y + y - 5;
     }
-    const animateHammer = percentage => {}
+    const animateHammer = percentage => {
+      // josselin animation
+
+      console.log({percentage})
+      hammeringNail(nail, percentage); // calling eliam with velocity
+    }
 
     catchHammer(hammer);
     handleDraggingHammer(hammer, this, moveHammer, animateHammer);
-    hammeringNail(nail);
+
 
     this.input.on('gameobjectup',  (pointer, gameObject) =>
     {
