@@ -22,7 +22,6 @@ export default class GameScene extends Phaser.Scene {
     const hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
     const moveHammer = ratio => {
-      console.log(ratio);
       const { angle, x, y } = getHammerPosition(1 - ratio);
       hammer.angle = angle;
       hammer.x = this.nail.x + x;
