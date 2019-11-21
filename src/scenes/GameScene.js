@@ -2,9 +2,9 @@ import 'phaser';
 import hammer from '../assets/hammer.png';
 import nail from '../assets/nail.png';
 import { getHammerPosition } from '../utils/getHammerPosition';
-import DirectionOfRotationEnum from './DirectionOfRotationEnum';
 import { catchHammer } from '../utils/hammer/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer/handleDraggingHammer';
+import { hammeringNail } from '../utils/nail/hammeringNail';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -18,47 +18,29 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // init scene
-    this.nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
-    const hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
+    const nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
+    const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
       hammer.angle = angle;
-      hammer.x = this.nail.x + x;
-      hammer.y = this.nail.y + y - 5;
+      hammer.x = nail.x + x;
+      hammer.y = nail.y + y - 5;
     }
     const animateHammer = percentage => {}
 
-    catchHammer(hammer)
-    handleDraggingHammer(hammer, this, moveHammer, animateHammer)
+    catchHammer(hammer);
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer);
+    hammeringNail(nail);
 
-
-    this.nailOriginX = 0.5;
-    this.nailOriginY = 0.5;
-    // will be dynamic @eliam
-    let velocity = 0.05;
-    // Use the right event @eliam
-    const clickHandler = (gameObject, velocity) => {
-      if(this.nailOriginY <= 0.15) {
-        this.nail.off('clicked', clickHandler);
-      } else {
-        this.nailOriginY -= velocity;
-        this.nailOriginY = Math.round(this.nailOriginY * 100) / 100;
-        console.log(this.nailOriginY)
-        this.nail.setOrigin(this.nailOriginX, this.nailOriginY);
-      }
-    };
-
-    this.nail.setInteractive();
-    this.nail.on('clicked', clickHandler, this);
     this.input.on('gameobjectup',  (pointer, gameObject) =>
     {
-      gameObject.emit('clicked', gameObject, velocity);
+      gameObject.emit('clicked', gameObject);
     }, this);
 
     const { angle, x, y } = getHammerPosition(1);
     hammer.angle = angle;
-    hammer.x = this.nail.x + x;
-    hammer.y = this.nail.y + y - 5;
+    hammer.x = nail.x + x;
+    hammer.y = nail.y + y - 5;
   }
 }
