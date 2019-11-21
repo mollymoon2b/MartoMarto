@@ -7,6 +7,8 @@ import {
   NEGATIVE_ANGLE_LIMIT,
   ANGLE_ROTATION_STEP
 } from './hammer-settings';
+import { catchHammer } from '../utils/hammer/catchHammer';
+import { handleDraggingHammer } from '../utils/hammer/handleDraggingHammer';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -19,17 +21,20 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // WIP @pierre
+    // init scene
     this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
-    this.graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00ff00 }, fillStyle: { color: 0xff0000 }});
+    this.graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00ff00 }, fillStyle: { color: 0xff0000 } });
 
-    // const nail = this.add.image(0, 0, 'nail');
     this.nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
-    this.hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
+    const hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
-    // Not effective @joss
-    // nail.anchor.setTo(0.5);
-    // nail.reset(Math.round(window.innerWidth / 2), window.innerHeight - nail.height);
+    // @josselin
+    const moveHammer = percentage => {}
+    const animateHammer = percentage => {}
+
+    catchHammer(hammer)
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer)
+
 
     this.nailOriginX = 0.5;
     this.nailOriginY = 0.5;
@@ -53,6 +58,10 @@ export default class GameScene extends Phaser.Scene {
     {
       gameObject.emit('clicked', gameObject, velocity);
     }, this);
+
+
+    // Make these variables available for update method
+    this.hammer = hammer;
   }
 
   update() {
