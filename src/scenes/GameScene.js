@@ -18,13 +18,16 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // init scene
-    this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
-    this.graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00ff00 }, fillStyle: { color: 0xff0000 } });
-
     this.nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
     const hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
-    const moveHammer = percentage => {}
+    const moveHammer = ratio => {
+      console.log(ratio);
+      const { angle, x, y } = getHammerPosition(1 - ratio);
+      hammer.angle = angle;
+      hammer.x = this.nail.x + x;
+      hammer.y = this.nail.y + y - 5;
+    }
     const animateHammer = percentage => {}
 
     catchHammer(hammer)

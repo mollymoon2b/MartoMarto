@@ -1,4 +1,4 @@
-import { redTint } from '../../constants/tintColors';
+import { redTint, whiteTint } from '../../constants/tintColors';
 import { calculatePercentageHammer } from './calculatePercentageHammer';
 
 const getPosition = gameObject => ({ x: gameObject.x, y: gameObject.y });
@@ -10,7 +10,7 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer) => {
   game.input.on('dragstart', function (pointer, gameObject) {
     // Let's show that we grab the hammer
     // Idea 1
-    gameObject.setTint(redTint);
+    gameObject.setTint(whiteTint);
     // Idea 2
     // Add a cursor as a hand
     // Idea 3
@@ -20,13 +20,9 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer) => {
   });
 
   game.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-    const newPosition = getPosition(gameObject);
+    const newPosition = {x: dragX, y: dragY}
     const percentage = calculatePercentageHammer({ originPosition, newPosition });
     moveHammer(percentage);
-
-    // Moving the hammer => @josselin may delete this
-    gameObject.x = dragX;
-    gameObject.y = dragY;
   });
 
 
