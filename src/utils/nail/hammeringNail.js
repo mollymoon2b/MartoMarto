@@ -9,7 +9,6 @@ const computeVelocity = (percentage) => {
 }
 
 const hammeringNail = (nail, percentage) => {
-  console.log('y',nailOrigin.y)
     if(nailOrigin.y === 0.15) {
       // win
     }
