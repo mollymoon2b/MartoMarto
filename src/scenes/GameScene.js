@@ -27,25 +27,29 @@ export default class GameScene extends Phaser.Scene {
       hammer.x = nail.x + x;
       hammer.y = nail.y + y - 5;
     }
-    const animateHammer = percentage => {
-      // josselin animation
 
-      console.log({percentage})
-      hammeringNail(nail, percentage); // calling eliam with velocity
-    }
+    const animateHammer = ratio => {
+      const initialRatio = ratio;
+
+      const intervalId = setInterval(() => {
+        if (ratio > 0) {
+          ratio -= 0.02;
+          moveHammer(ratio);
+        } else {
+          clearInterval(intervalId);
+          hammeringNail(nail, initialRatio);
+        }
+      }, 1000 / 60);
+    };
 
     catchHammer(hammer);
     handleDraggingHammer(hammer, this, moveHammer, animateHammer);
-
 
     this.input.on('gameobjectup',  (pointer, gameObject) =>
     {
       gameObject.emit('clicked', gameObject);
     }, this);
 
-    const { angle, x, y } = getHammerPosition(1);
-    hammer.angle = angle;
-    hammer.x = nail.x + x;
-    hammer.y = nail.y + y - 5;
+    moveHammer(0);
   }
 }
