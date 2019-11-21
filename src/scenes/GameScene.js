@@ -1,12 +1,8 @@
 import 'phaser';
 import hammer from '../assets/hammer.png';
 import nail from '../assets/nail.png';
+import { getHammerPosition } from '../utils/getHammerPosition';
 import DirectionOfRotationEnum from './DirectionOfRotationEnum';
-import {
-  POSITIVE_ANGLE_LIMIT,
-  NEGATIVE_ANGLE_LIMIT,
-  ANGLE_ROTATION_STEP
-} from './hammer-settings';
 import { catchHammer } from '../utils/hammer/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer/handleDraggingHammer';
 
@@ -28,7 +24,6 @@ export default class GameScene extends Phaser.Scene {
     this.nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail');
     const hammer = this.add.image(this.nail.x - 260, this.nail.y - 300, 'hammer');
 
-    // @josselin
     const moveHammer = percentage => {}
     const animateHammer = percentage => {}
 
@@ -50,7 +45,7 @@ export default class GameScene extends Phaser.Scene {
         console.log(this.nailOriginY)
         this.nail.setOrigin(this.nailOriginX, this.nailOriginY);
       }
-    }
+    };
 
     this.nail.setInteractive();
     this.nail.on('clicked', clickHandler, this);
@@ -59,35 +54,9 @@ export default class GameScene extends Phaser.Scene {
       gameObject.emit('clicked', gameObject, velocity);
     }, this);
 
-
-    // Make these variables available for update method
-    this.hammer = hammer;
-  }
-
-  update() {
-    let deltaAngle = 0;
-
-    if (this.directionOfRotation === DirectionOfRotationEnum.POSITIVE) {
-      if (this.hammer.angle < POSITIVE_ANGLE_LIMIT) {
-        deltaAngle = ANGLE_ROTATION_STEP;
-      } else {
-        this.directionOfRotation = DirectionOfRotationEnum.NEGATIVE;
-      }
-    } else {
-      if (this.hammer.angle > NEGATIVE_ANGLE_LIMIT) {
-        deltaAngle = -ANGLE_ROTATION_STEP;
-      } else {
-        this.directionOfRotation = DirectionOfRotationEnum.POSITIVE;
-      }
-    }
-    this.hammer.angle += deltaAngle * 1.5;
-
-    const rotationCenter = {
-      x: this.nail.x - 230,
-      y: this.nail.y - Math.round(this.nail.height / 2)
-    };
-    Phaser.Actions.RotateAround([this.hammer], rotationCenter, deltaAngle / 180 * Math.PI);
-    this.graphics.fillStyle(0xff00ff);
-    this.graphics.fillRect(rotationCenter.x - 1, rotationCenter.y - 1, 2, 2);
+    const { angle, x, y } = getHammerPosition(1);
+    hammer.angle = angle;
+    hammer.x = this.nail.x + x;
+    hammer.y = this.nail.y + y - 5;
   }
 }
