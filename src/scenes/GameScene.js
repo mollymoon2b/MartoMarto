@@ -31,6 +31,12 @@ export default class GameScene extends Phaser.Scene {
       hammer.y = nail.y + y - 5;
     }
 
+    const prepareNewHit = (gameState, initialRatio) => {
+      const score = computeScore(gameState, initialRatio);
+      scoreElem.setText(`${score} (${gameState})`);
+      moveHammer(0); // Follow the nail
+    }
+
     const animateHammer = ratio => {
       const initialRatio = ratio;
 
@@ -41,15 +47,13 @@ export default class GameScene extends Phaser.Scene {
         } else {
           clearInterval(intervalId);
           const gameState = hammeringNail(nail, initialRatio);
-          const score = computeScore(gameState, initialRatio);
-          scoreElem.setText(`${score} (${gameState})`);
-          moveHammer(ratio); // Follow the nail
+          prepareNewHit(gameState, initialRatio)
         }
       }, 1000 / 60);
     };
 
     catchHammer(hammer);
-    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail);
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail, prepareNewHit);
     moveHammer(0);
   }
 }
