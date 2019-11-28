@@ -1,28 +1,24 @@
-let nailOrigin = { x: 0.5, y: 0.5 };
-const velocity = 0.10;
+const velocity = 20;
 
-const computeVelocity = (percentage) => {
+const computeVelocity = (percentage) => percentage > 0 ? Math.round(percentage * velocity) : 0;
 
-  const toto = percentage > 0 ? percentage * velocity : 0;
-  console.log({velocity})
-  return toto;
-}
 
 const hammeringNail = (nail, percentage) => {
-    if(nailOrigin.y === 0.15) {
+  const hiddenNail = (nail.height/2) - 8;
+  const maxBottomNailHeight = window.innerHeight + hiddenNail;
+  const nailHeight = nail.y + computeVelocity(percentage);
+
+    if(nailHeight === maxBottomNailHeight) {
       // win
     }
 
-    if(nailOrigin.y < 0.15) {
+    if(nailHeight > maxBottomNailHeight) {
       // Lose
     } else {
-      nailOrigin.y -= computeVelocity(percentage);
-      nailOrigin.y = Math.round(nailOrigin.y * 100) / 100;
-      console.log(nailOrigin.y)
-      nail.setOrigin(nailOrigin.x, nailOrigin.y);
+
+
+      nail.setPosition(nail.x, nailHeight);
     }
-
-
 };
 
 export { hammeringNail };
