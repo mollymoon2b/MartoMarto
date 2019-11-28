@@ -23,19 +23,20 @@ export default class GameScene extends Phaser.Scene {
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
     this.add.text(50, 60, FBInstant.player.getName(), { fontFamily: 'RetroGaming', fontSize: '20px' });
     const scoreElem = this.add.text(50, 100, '0 (CONTINUE)', { fontFamily: 'RetroGaming', fontSize: '20px' });
+    let score = 0;
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
       hammer.angle = angle;
       hammer.x = nail.x + x;
       hammer.y = nail.y + y - 5;
-    }
+    };
 
     const prepareNewHit = (gameState, initialRatio) => {
-      const score = computeScore(gameState, initialRatio);
+      score += computeScore(gameState, initialRatio);
       scoreElem.setText(`${score} (${gameState})`);
       moveHammer(0); // Follow the nail
-    }
+    };
 
     const animateHammer = ratio => {
       const initialRatio = ratio;
