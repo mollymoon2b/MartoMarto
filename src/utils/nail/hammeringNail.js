@@ -14,7 +14,6 @@ const hammeringNail = (nail, percentage) => {
   const maxBottomNailHeight = window.innerHeight + hiddenNail;
   const nailHeight = nail.y + computeVelocity(percentage);
 
-console.log({nailHeight},maxBottomNailHeight - ACCURACY, '<>', maxBottomNailHeight + ACCURACY)
   if(nailHeight >= (maxBottomNailHeight - ACCURACY) && nailHeight <= (maxBottomNailHeight + ACCURACY)) {
     // win
     return GAME_STATE.WON;

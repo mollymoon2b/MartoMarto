@@ -50,12 +50,6 @@ export default class GameScene extends Phaser.Scene {
 
     catchHammer(hammer);
     handleDraggingHammer(hammer, this, moveHammer, animateHammer);
-
-    this.input.on('gameobjectup',  (pointer, gameObject) =>
-    {
-      gameObject.emit('clicked', gameObject);
-    }, this);
-
     moveHammer(0);
   }
 }
