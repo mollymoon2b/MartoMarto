@@ -57,6 +57,6 @@ if (saveButton) {
   });
 }
 
-FBInstant.initializeAsync().then(function() {
-  FBInstant.startGameAsync().then();
-});
+FBInstant.initializeAsync()
+  .then(FBInstant.startGameAsync)
+  .catch(error => console.error(error));
