@@ -1,10 +1,13 @@
-import { redTint, whiteTint } from '../../constants/tintColors';
+import { whiteTint } from '../../constants/tintColors';
 import { calculatePercentageHammer } from './calculatePercentageHammer';
+import { handleRotationHammer } from './rotation/handleRotationHammer';
 
 const getPosition = gameObject => ({ x: gameObject.x, y: gameObject.y });
 
-const handleDraggingHammer = (hammer, game, moveHammer, animateHammer) => {
+const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammeringNail, nail) => {
   let originPosition;
+  let preventDragEnd = false;
+
   game.input.setDraggable(hammer);
 
   game.input.on('dragstart', function (pointer, gameObject) {
@@ -20,9 +23,11 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer) => {
   });
 
   game.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-    const newPosition = {x: dragX, y: dragY}
+    const newPosition = { x: dragX, y: dragY };
     const percentage = calculatePercentageHammer({ originPosition, newPosition });
     moveHammer(percentage);
+
+    preventDragEnd = handleRotationHammer({hammeringNail, preventDragEnd, percentage, originPosition, newPosition, nail})
   });
 
 
@@ -30,9 +35,13 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer) => {
     // Clean after dragstart
     gameObject.clearTint();
 
-    const newPosition = getPosition(gameObject);
-    const percentage = calculatePercentageHammer({ originPosition, newPosition });
-    animateHammer(percentage);
+    if (preventDragEnd === false) {
+      const newPosition = getPosition(gameObject);
+      const percentage = calculatePercentageHammer({ originPosition, newPosition });
+      animateHammer(percentage);
+    } else {
+      preventDragEnd = false
+    }
   });
 };
 

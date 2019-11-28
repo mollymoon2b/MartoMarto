@@ -49,7 +49,7 @@ export default class GameScene extends Phaser.Scene {
     };
 
     catchHammer(hammer);
-    handleDraggingHammer(hammer, this, moveHammer, animateHammer);
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail);
     moveHammer(0);
   }
 }
