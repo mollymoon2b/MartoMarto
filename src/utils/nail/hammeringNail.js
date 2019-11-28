@@ -1,5 +1,5 @@
 const VELOCITY = 20;
-const ACCURACY = 5
+const ACCURACY = 2;
 
 export const GAME_STATE = {
   CONTINUE: 'CONTINUE',
