@@ -43,7 +43,7 @@ export default class GameScene extends Phaser.Scene {
 
       const intervalId = setInterval(() => {
         if (ratio > 0) {
-          ratio -= 0.02;
+          ratio -= 0.02 * Math.abs(Math.max((initialRatio - ratio) * 50, 1));
           moveHammer(ratio);
         } else {
           clearInterval(intervalId);
