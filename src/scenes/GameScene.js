@@ -4,7 +4,7 @@ import nail from '../assets/nail.png';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
-import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
+import { hammeringNail } from '../utils/nail/hammeringNail';
 import { computeScore } from '../utils/scoreManager';
 
 export default class GameScene extends Phaser.Scene {

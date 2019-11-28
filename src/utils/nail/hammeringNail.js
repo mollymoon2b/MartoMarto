@@ -10,21 +10,22 @@ export const GAME_STATE = {
 const computeVelocity = (percentage) => percentage > 0 ? Math.round(percentage * VELOCITY) : 0;
 
 const hammeringNail = (nail, percentage) => {
-  const hiddenNail = (nail.height/2) - 8;
+  const hiddenNail = (nail.height/2) - 12;
   const maxBottomNailHeight = window.innerHeight + hiddenNail;
-  const nailHeight = nail.y + computeVelocity(percentage);
+  const nailHeight = Math.min(nail.y + computeVelocity(percentage), maxBottomNailHeight);
 
-  if(nailHeight >= (maxBottomNailHeight - ACCURACY) && nailHeight <= (maxBottomNailHeight + ACCURACY)) {
+  nail.setPosition(nail.x, nailHeight);
+
+  if(nailHeight >= (maxBottomNailHeight - ACCURACY) && nailHeight < maxBottomNailHeight) {
     // win
     return GAME_STATE.WON;
   }
 
-  if(nailHeight > maxBottomNailHeight) {
+  if(nailHeight >= maxBottomNailHeight) {
     // Lose
     return GAME_STATE.LOST;
   }
 
-  nail.setPosition(nail.x, nailHeight);
   return GAME_STATE.CONTINUE;
 };
 
