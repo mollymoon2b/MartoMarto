@@ -4,7 +4,8 @@ import nail from '../assets/nail.png';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
-import { hammeringNail } from '../utils/nail/hammeringNail';
+import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
+import { computeScore } from '../utils/scoreManager';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -20,6 +21,7 @@ export default class GameScene extends Phaser.Scene {
     // init scene
     const nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
+    const scoreElem = this.add.text(100, 100, '', { fontFamily: 'RetroGaming', fontSize: '20px' });
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
@@ -37,7 +39,9 @@ export default class GameScene extends Phaser.Scene {
           moveHammer(ratio);
         } else {
           clearInterval(intervalId);
-          hammeringNail(nail, initialRatio);
+          const gameState = hammeringNail(nail, initialRatio);
+          const score = computeScore(gameState, initialRatio);
+          scoreElem.setText(`${score} (${gameState})`);
         }
       }, 1000 / 60);
     };
