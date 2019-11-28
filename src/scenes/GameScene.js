@@ -21,7 +21,8 @@ export default class GameScene extends Phaser.Scene {
     // init scene
     const nail = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
-    const scoreElem = this.add.text(100, 100, '', { fontFamily: 'RetroGaming', fontSize: '20px' });
+    this.add.text(50, 60, FBInstant.player.getName(), { fontFamily: 'RetroGaming', fontSize: '20px' });
+    const scoreElem = this.add.text(50, 100, '0 (CONTINUE)', { fontFamily: 'RetroGaming', fontSize: '20px' });
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
@@ -42,6 +43,7 @@ export default class GameScene extends Phaser.Scene {
           const gameState = hammeringNail(nail, initialRatio);
           const score = computeScore(gameState, initialRatio);
           scoreElem.setText(`${score} (${gameState})`);
+          moveHammer(ratio); // Follow the nail
         }
       }, 1000 / 60);
     };
