@@ -1,3 +1,4 @@
+import { randomize } from '../../randomize';
 import { calculatePercentageHammer } from '../calculatePercentageHammer';
 import { calculateRotationPercentageHammer } from './calculateRotationPercentageHammer';
 
@@ -29,7 +30,9 @@ const handleRotationHammer = ({ hammeringNail, preventDragEnd, percentage, origi
 
   // Si le marteau atteint le clou avec une apogée définie
   if (percentage < 0 && rotation.hasReachedTop) {
-    const percentage = calculateRotationPercentageHammer({ originPosition, rotation });
+    const percentage = randomize(
+      calculateRotationPercentageHammer({ originPosition, rotation })
+    );
     rotation = resetRotation();
 
     if (percentage > 0.05) {

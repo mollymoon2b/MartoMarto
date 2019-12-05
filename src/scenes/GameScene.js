@@ -7,6 +7,7 @@ import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer, disableDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
 import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
+import { randomize } from '../utils/randomize';
 import { computeScore, shareScore } from '../utils/scoreManager';
 import { tableConfig } from '../utils/table/tableConfig';
 import { youWin, gameOver } from '../utils/endOfGame';
@@ -68,6 +69,7 @@ export default class GameScene extends Phaser.Scene {
     };
 
     const animateHammer = ratio => {
+      ratio = randomize(ratio);
       const initialRatio = ratio;
 
       const intervalId = setInterval(async () => {
