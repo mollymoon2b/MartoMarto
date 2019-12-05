@@ -1,5 +1,6 @@
 const VELOCITY = 20;
 const ACCURACY = 2;
+const DISTANCE_BETWEEN_TOP_OF_TABLE_AND_CENTER_OF_TABLE = 48;
 
 export const GAME_STATE = {
   CONTINUE: 'CONTINUE',
@@ -10,7 +11,7 @@ export const GAME_STATE = {
 const computeVelocity = percentage => percentage > 0 ? Math.round(percentage * VELOCITY) : 0;
 
 const hammeringNail = (nail, table, percentage) => {
-  const maxBottomNailHeight = table.y + 48;
+  const maxBottomNailHeight = table.y + DISTANCE_BETWEEN_TOP_OF_TABLE_AND_CENTER_OF_TABLE;
   const nailHeight = Math.min(nail.y + computeVelocity(percentage), maxBottomNailHeight);
 
   nail.setPosition(nail.x, nailHeight);

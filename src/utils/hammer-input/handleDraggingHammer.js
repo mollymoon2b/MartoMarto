@@ -11,14 +11,6 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammering
   game.input.setDraggable(hammer);
 
   game.input.on('dragstart', function (pointer, gameObject) {
-    // Let's show that we grab the hammer
-    // Idea 1
-    gameObject.setTint(whiteTint);
-    // Idea 2
-    // Add a cursor as a hand
-    // Idea 3
-    // Rotate the hammer a little bit
-
     originPosition = getPosition(gameObject);
   });
 
