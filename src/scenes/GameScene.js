@@ -5,7 +5,7 @@ import tableSpritesheet from '../assets/table.png';
 import tableSpritesheetJson from '../assets/table.json';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
-import { handleDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
+import { handleDraggingHammer, disableDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
 import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
 import { computeScore, shareScore } from '../utils/scoreManager';
 import { tableConfig } from '../utils/table/tableConfig';
