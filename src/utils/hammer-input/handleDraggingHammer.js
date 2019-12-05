@@ -31,6 +31,7 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammering
       const newPosition = getPosition(gameObject);
       const percentage = calculatePercentageHammer({ originPosition, newPosition });
       animateHammer(percentage);
+      preventDragEnd = true
     } else {
       preventDragEnd = false
     }
