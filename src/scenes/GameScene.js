@@ -28,9 +28,10 @@ export default class GameScene extends Phaser.Scene {
     table.setDepth(1);
     this.add.text(50, 60, FBInstant.player.getName(), { fontFamily: 'RetroGaming', fontSize: '20px' });
     let score = 0;
-    let hit = 0;
-    const hitElem = this.add.text(50, 100, `HIT: ${hit}`, { fontFamily: 'RetroGaming', fontSize: '20px' });
-    const scoreElem = this.add.text(50, 120, `${score} (CONTINUE)`, { fontFamily: 'RetroGaming', fontSize: '20px' });
+    let hits = 0;
+    const hitElem = this.add.text(50, 100, `HITS: ${hits}`, { fontFamily: 'RetroGaming', fontSize: '20px' });
+    const scoreElem = this.add.text(50, 120, `SCORE: ${score}`, { fontFamily: 'RetroGaming', fontSize: '20px' });
+    const stateElem = this.add.text(50, 140, `CONTINUE`, { fontFamily: 'RetroGaming', fontSize: '20px' });
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
@@ -40,10 +41,11 @@ export default class GameScene extends Phaser.Scene {
     };
 
     const prepareNewHit = async (gameState, initialRatio) => {
-      hit++;
+      hits++;
       score += computeScore(gameState, initialRatio);
-      hitElem.setText(`HIT: ${hit}`);
-      scoreElem.setText(`${score} (${gameState})`);
+      hitElem.setText(`HITS: ${hits}`);
+      scoreElem.setText(`SCORE: ${score}`);
+      stateElem.setText(`${gameState}`);
       moveHammer(0); // Follow the nail
 
       if (gameState === GAME_STATE.WON) {
