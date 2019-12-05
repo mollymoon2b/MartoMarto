@@ -37,26 +37,6 @@ if (relunchButton) {
   });
 }
 
-const saveButton = document.querySelector('.save-button');
-if (saveButton) {
-  saveButton.addEventListener('click', () => {
-    FBInstant
-    .getLeaderboardAsync('score-test-1')
-    .then(leaderboard => {
-      return leaderboard.setScoreAsync(Math.floor(Math.random() * 100));
-    })
-    .then(() => console.log('Score saved'))
-    .catch(error => console.error(error));
-
-    FBInstant.updateAsync({
-      action: 'LEADERBOARD',
-      name: 'score-test-1'
-    })
-      .then(() => console.log('Update Posted'))
-      .catch(error => console.error(error));
-  });
-}
-
 FBInstant.initializeAsync()
   .then(FBInstant.startGameAsync)
   .catch(error => console.error(error));

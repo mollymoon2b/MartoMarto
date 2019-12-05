@@ -6,8 +6,8 @@ import tableSpritesheetJson from '../assets/spritesheet.json';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
-import { hammeringNail } from '../utils/nail/hammeringNail';
-import { computeScore } from '../utils/scoreManager';
+import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
+import { computeScore, shareScore } from '../utils/scoreManager';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -37,23 +37,27 @@ export default class GameScene extends Phaser.Scene {
       hammer.y = nail.y + y - 5;
     };
 
-    const prepareNewHit = (gameState, initialRatio) => {
+    const prepareNewHit = async (gameState, initialRatio) => {
       score += computeScore(gameState, initialRatio);
       scoreElem.setText(`${score} (${gameState})`);
       moveHammer(0); // Follow the nail
+
+      if (gameState === GAME_STATE.WON) {
+        await shareScore(score);
+      }
     };
 
     const animateHammer = ratio => {
       const initialRatio = ratio;
 
-      const intervalId = setInterval(() => {
+      const intervalId = setInterval(async () => {
         if (ratio > 0) {
           ratio -= 0.02 * Math.abs(Math.max((initialRatio - ratio) * 50, 1));
           moveHammer(ratio);
         } else {
           clearInterval(intervalId);
           const gameState = hammeringNail(nail, table, initialRatio);
-          prepareNewHit(gameState, initialRatio);
+          await prepareNewHit(gameState, initialRatio);
         }
       }, 1000 / 60);
     };
