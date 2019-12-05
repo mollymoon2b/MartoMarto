@@ -9,6 +9,7 @@ import { handleDraggingHammer, disableDraggingHammer } from '../utils/hammer-inp
 import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
 import { computeScore, shareScore } from '../utils/scoreManager';
 import { tableConfig } from '../utils/table/tableConfig';
+import { youWin, gameOver } from '../utils/endOfGame';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
