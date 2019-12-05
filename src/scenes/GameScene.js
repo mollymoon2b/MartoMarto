@@ -8,6 +8,7 @@ import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
 import { GAME_STATE, hammeringNail } from '../utils/nail/hammeringNail';
 import { computeScore, shareScore } from '../utils/scoreManager';
+import { tableConfig } from '../utils/table/tableConfig';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -21,17 +22,20 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // init scene
+    // Init scene with objects
     const table = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight - 86, 'tableSpritesheet');
     const nail = this.add.sprite(table.x, table.y - 100, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
     table.setDepth(1);
-    this.add.text(50, 60, FBInstant.player.getName(), { fontFamily: 'RetroGaming', fontSize: '20px' });
+    this.anims.create(tableConfig);
+
+    // Top information board
+    const retroStyle = { fontFamily: 'RetroGaming', fontSize: '20px' };
     let score = 0;
     let hits = 0;
-    const hitElem = this.add.text(50, 100, `HITS: ${hits}`, { fontFamily: 'RetroGaming', fontSize: '20px' });
-    const scoreElem = this.add.text(50, 120, `SCORE: ${score}`, { fontFamily: 'RetroGaming', fontSize: '20px' });
-    const stateElem = this.add.text(50, 140, `CONTINUE`, { fontFamily: 'RetroGaming', fontSize: '20px' });
+    const hitElem = this.add.text(50, 100, `HITS: ${hits}`, retroStyle);
+    const scoreElem = this.add.text(50, 120, `SCORE: ${score}`, retroStyle);
+    const stateElem = this.add.text(50, 140, `READY?`, retroStyle);
 
     const moveHammer = ratio => {
       const { angle, x, y } = getHammerPosition(1 - ratio);
@@ -71,29 +75,5 @@ export default class GameScene extends Phaser.Scene {
     catchHammer(hammer);
     handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail, table, prepareNewHit);
     moveHammer(0);
-
-    const configBreakTable = {
-      key: 'breakTable',
-      frames: [
-        { key: 'tableSpritesheet', frame: 'final-animation0001.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0002.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0003.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0004.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0005.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0006.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0007.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0008.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0009.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0010.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0011.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0012.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0013.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0014.png' },
-        { key: 'tableSpritesheet', frame: 'final-animation0015.png' },
-      ],
-      frameRate: 60, // frame rate – the speed of the animation. Higher is faster.
-    };
-
-    this.anims.create(configBreakTable);
   }
 }
