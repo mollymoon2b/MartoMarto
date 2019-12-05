@@ -52,9 +52,18 @@ export default class GameScene extends Phaser.Scene {
       stateElem.setText(`${gameState}`);
       moveHammer(0); // Follow the nail
 
-      if (gameState === GAME_STATE.WON) {
-        await shareScore(score);
+      switch(gameState) {
+        case GAME_STATE.WON:
+          disableDraggingHammer(this, hammer);
+          youWin(); // todo message and something else
+          await shareScore(score);
+          break;
+        case GAME_STATE.LOST:
+          disableDraggingHammer(this, hammer);
+          gameOver(); // todo message end of game you are a looser
+          break;
       }
+
     };
 
     const animateHammer = ratio => {

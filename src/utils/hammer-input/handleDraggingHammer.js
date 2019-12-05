@@ -37,6 +37,11 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammering
   });
 };
 
+const disableDraggingHammer = (game, hammer) => {
+  game.input.setDraggable(hammer, false);
+};
+
 export {
+  disableDraggingHammer,
   handleDraggingHammer
 };
