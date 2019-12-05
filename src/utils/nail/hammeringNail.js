@@ -10,7 +10,7 @@ export const GAME_STATE = {
 const computeVelocity = percentage => percentage > 0 ? Math.round(percentage * VELOCITY) : 0;
 
 const hammeringNail = (nail, table, percentage) => {
-  const maxBottomNailHeight = table.y + 45;
+  const maxBottomNailHeight = table.y + 48;
   const nailHeight = Math.min(nail.y + computeVelocity(percentage), maxBottomNailHeight);
 
   nail.setPosition(nail.x, nailHeight);

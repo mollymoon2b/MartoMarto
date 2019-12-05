@@ -24,7 +24,7 @@ export default class GameScene extends Phaser.Scene {
   create() {
     // Init scene with objects
     const table = this.add.sprite(Math.round(window.innerWidth / 2), window.innerHeight - 86, 'tableSpritesheet');
-    const nail = this.add.sprite(table.x, table.y - 100, 'nail').setInteractive();
+    const nail = this.add.sprite(table.x, table.y - 111, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
     table.setDepth(1);
     this.anims.create(tableConfig);
