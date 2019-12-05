@@ -29,7 +29,6 @@ const handleRotationHammer = ({ hammeringNail, preventDragEnd, percentage, origi
 
   // Si le marteau atteint le clou avec une apogée définie
   if (percentage < 0 && rotation.hasReachedTop) {
-    console.log('youpi');
     const percentage = calculateRotationPercentageHammer({ originPosition, rotation });
     rotation = resetRotation();
 

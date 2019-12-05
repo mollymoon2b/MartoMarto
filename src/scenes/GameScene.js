@@ -23,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
   create() {
     // init scene
     const table = this.add.image(Math.round(window.innerWidth / 2), window.innerHeight - 86, 'table');
-    const nail = this.add.sprite(table.x - 100, table.y - 100, 'nail').setInteractive();
+    const nail = this.add.sprite(table.x, table.y - 100, 'nail').setInteractive();
     const hammer = this.add.image(nail.x - 260, nail.y - 300, 'hammer');
     this.add.text(50, 60, FBInstant.player.getName(), { fontFamily: 'RetroGaming', fontSize: '20px' });
     const scoreElem = this.add.text(50, 100, '0 (CONTINUE)', { fontFamily: 'RetroGaming', fontSize: '20px' });
