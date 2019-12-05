@@ -22,6 +22,7 @@ const hammeringNail = (nail, table, percentage) => {
 
   if (nailHeight >= maxBottomNailHeight) {
     // Lose
+    table.play('breakTable');
     return GAME_STATE.LOST;
   }
 
