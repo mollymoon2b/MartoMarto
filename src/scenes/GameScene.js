@@ -52,14 +52,14 @@ export default class GameScene extends Phaser.Scene {
           moveHammer(ratio);
         } else {
           clearInterval(intervalId);
-          const gameState = hammeringNail(nail, initialRatio);
+          const gameState = hammeringNail(nail, table, initialRatio);
           prepareNewHit(gameState, initialRatio)
         }
       }, 1000 / 60);
     };
 
     catchHammer(hammer);
-    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail, prepareNewHit);
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail, table, prepareNewHit);
     moveHammer(0);
   }
 }

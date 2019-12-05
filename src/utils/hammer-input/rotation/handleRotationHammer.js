@@ -10,7 +10,7 @@ const resetRotation = () => ({
 let previousPosition = { x: 0, y: 0 };
 let rotation = resetRotation();
 
-const handleRotationHammer = ({ hammeringNail, preventDragEnd, percentage, originPosition, newPosition, nail, prepareNewHit }) => {
+const handleRotationHammer = ({ hammeringNail, preventDragEnd, percentage, originPosition, newPosition, nail, table, prepareNewHit }) => {
   const instantPercentage = calculatePercentageHammer({ originPosition: previousPosition, newPosition });
 
   // Si le marteau commence à descendre vers le clou et qu'il n'a jamais atteint une apogée, alors on retient les infos du marteau
@@ -34,7 +34,7 @@ const handleRotationHammer = ({ hammeringNail, preventDragEnd, percentage, origi
 
     if (percentage > 0.05) {
       preventDragEnd = true;
-      const gameState = hammeringNail(nail, percentage);
+      const gameState = hammeringNail(nail, table, percentage);
       prepareNewHit(gameState, percentage)
     }
   }

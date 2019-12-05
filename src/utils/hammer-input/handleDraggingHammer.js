@@ -4,7 +4,7 @@ import { handleRotationHammer } from './rotation/handleRotationHammer';
 
 const getPosition = gameObject => ({ x: gameObject.x, y: gameObject.y });
 
-const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammeringNail, nail, prepareNewHit) => {
+const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammeringNail, nail, table, prepareNewHit) => {
   let originPosition;
   let preventDragEnd = false;
 
@@ -27,7 +27,7 @@ const handleDraggingHammer = (hammer, game, moveHammer, animateHammer, hammering
     const percentage = calculatePercentageHammer({ originPosition, newPosition });
     moveHammer(percentage);
 
-    preventDragEnd = handleRotationHammer({hammeringNail, preventDragEnd, percentage, originPosition, newPosition, nail, prepareNewHit})
+    preventDragEnd = handleRotationHammer({hammeringNail, preventDragEnd, percentage, originPosition, newPosition, nail, table, prepareNewHit})
   });
 
 
