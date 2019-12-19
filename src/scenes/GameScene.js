@@ -5,6 +5,7 @@ import tableSpritesheet from '../assets/table.png';
 import hammerSound from '../assets/hammer.mp3';
 import tableSpritesheetJson from '../assets/table.json';
 import tableBreakSound from '../assets/tableBreak.mp3';
+import victorySound from '../assets/victory.mp3';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer, disableDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
@@ -27,6 +28,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.atlas('tableSpritesheet', tableSpritesheet, tableSpritesheetJson);
     this.load.audio('hammerSound', hammerSound, { instances: 1 });
     this.load.audio('tableBreakSound', tableBreakSound, { instances: 1 });
+    this.load.audio('victorySound', victorySound, { instances: 1 });
   }
 
   create() {
@@ -38,6 +40,7 @@ export default class GameScene extends Phaser.Scene {
     this.anims.create(tableConfig);
     this.sound.add('hammerSound');
     this.sound.add('tableBreakSound');
+    this.sound.add('victorySound');
 
     // Top information board
     let gameState = GAME_STATE.CONTINUE;
@@ -67,6 +70,9 @@ export default class GameScene extends Phaser.Scene {
           break;
         case GAME_STATE.LOST:
           this.sound.play('tableBreakSound');
+          break;
+        case GAME_STATE.WON:
+          this.sound.play('victorySound');
       }
 
       hits++;
