@@ -4,6 +4,7 @@ import nail from '../assets/nail.png';
 import tableSpritesheet from '../assets/table.png';
 import hammerSound from '../assets/hammer.mp3';
 import tableSpritesheetJson from '../assets/table.json';
+import tableBreakSound from '../assets/tableBreak.mp3';
 import { getHammerPosition } from '../utils/getHammerPosition';
 import { catchHammer } from '../utils/hammer-input/catchHammer';
 import { handleDraggingHammer, disableDraggingHammer } from '../utils/hammer-input/handleDraggingHammer';
@@ -23,6 +24,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('nail', nail);
     this.load.atlas('tableSpritesheet', tableSpritesheet, tableSpritesheetJson);
     this.load.audio('hammerSound', hammerSound, { instances: 1 });
+    this.load.audio('tableBreakSound', tableBreakSound, { instances: 1 });
   }
 
   create() {
@@ -33,6 +35,7 @@ export default class GameScene extends Phaser.Scene {
     table.setDepth(1);
     this.anims.create(tableConfig);
     this.sound.add('hammerSound');
+    this.sound.add('tableBreakSound');
 
     // Top information board
     const retroStyle = { fontFamily: 'RetroGaming', fontSize: '20px' };
@@ -56,7 +59,14 @@ export default class GameScene extends Phaser.Scene {
       }
 
       gameState = hammeringNail(nail, table, initialRatio);
-      this.sound.play('hammerSound');
+
+      switch (gameState) {
+        case GAME_STATE.CONTINUE:
+          this.sound.play('hammerSound');
+          break;
+        case GAME_STATE.LOST:
+          this.sound.play('tableBreakSound');
+      }
 
       hits++;
       score += computeScore(gameState, initialRatio);
