@@ -13,5 +13,14 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-    }
+    },
+    "overrides": [
+        {
+          "files": ["bin/*.js", "lib/*.js"],
+          "excludedFiles": "webpack/*",
+          "rules": {
+            "quotes": ["error", "single"]
+          }
+        }
+      ]
 };
