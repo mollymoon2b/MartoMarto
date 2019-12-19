@@ -43,7 +43,7 @@ export default class GameScene extends Phaser.Scene {
       const { angle, x, y } = getHammerPosition(1 - ratio);
       hammer.angle = angle;
       hammer.x = nail.x + x;
-      hammer.y = nail.y + y - 5;
+      hammer.y = nail.y + y + 14;
     };
 
     const prepareNewHit = async (gameState, initialRatio) => {
