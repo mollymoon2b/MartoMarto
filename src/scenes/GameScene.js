@@ -33,6 +33,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Top information board
     const retroStyle = { fontFamily: 'RetroGaming', fontSize: '20px' };
+    let gameState = GAME_STATE.CONTINUE;
     let score = 0;
     let hits = 0;
     const hitElem = this.add.text(50, 100, `HITS: ${hits}`, retroStyle);
@@ -46,7 +47,13 @@ export default class GameScene extends Phaser.Scene {
       hammer.y = nail.y + y + 14;
     };
 
-    const prepareNewHit = async (gameState, initialRatio) => {
+    const prepareNewHit = async (initialRatio) => {
+      if (gameState !== GAME_STATE.CONTINUE) {
+        return;
+      }
+
+      gameState = hammeringNail(nail, table, initialRatio);
+
       hits++;
       score += computeScore(gameState, initialRatio);
       hitElem.setText(`HITS: ${hits}`);
@@ -78,14 +85,13 @@ export default class GameScene extends Phaser.Scene {
           moveHammer(ratio);
         } else {
           clearInterval(intervalId);
-          const gameState = hammeringNail(nail, table, initialRatio);
-          await prepareNewHit(gameState, initialRatio);
+          await prepareNewHit(initialRatio);
         }
       }, 1000 / 60);
     };
 
     catchHammer(hammer);
-    handleDraggingHammer(hammer, this, moveHammer, animateHammer, hammeringNail, nail, table, prepareNewHit);
+    handleDraggingHammer(hammer, this, moveHammer, animateHammer, prepareNewHit);
     moveHammer(0);
   }
 }

@@ -1,8 +1,8 @@
-const gameOver = (game) => {
+const gameOver = () => {
 
 };
 
-const youWin = (game) => {
+const youWin = () => {
 
 };
 

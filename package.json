@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config webpack/prod.js",
+    "lint": "eslint 'src/**/*.js'",
     "start": "webpack-dev-server --config webpack/base.js --open --port=8080 --https"
   },
   "repository": {
