@@ -14,13 +14,9 @@ module.exports = {
     },
     "rules": {
     },
-    "overrides": [
-        {
-          "files": ["bin/*.js", "lib/*.js"],
-          "excludedFiles": "webpack/*",
-          "rules": {
-            "quotes": ["error", "single"]
-          }
-        }
-      ]
+    "ignorePatterns": ["webpack/"],
+    "globals": {
+        Phaser: true,
+        FBInstant: true
+    }
 };
