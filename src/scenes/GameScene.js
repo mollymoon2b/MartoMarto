@@ -13,6 +13,8 @@ import { randomize } from '../utils/randomize';
 import { computeScore, shareScore } from '../utils/scoreManager';
 import { tableConfig } from '../utils/table/tableConfig';
 import { youWin, gameOver } from '../utils/endOfGame';
+import { retroStyle } from '../constants/styles';
+
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -38,7 +40,6 @@ export default class GameScene extends Phaser.Scene {
     this.sound.add('tableBreakSound');
 
     // Top information board
-    const retroStyle = { fontFamily: 'RetroGaming', fontSize: '20px' };
     let gameState = GAME_STATE.CONTINUE;
     let score = 0;
     let hits = 0;
@@ -78,7 +79,7 @@ export default class GameScene extends Phaser.Scene {
       switch(gameState) {
         case GAME_STATE.WON:
           disableDraggingHammer(this, hammer);
-          youWin(); // todo message and something else
+          youWin(this, {hits, score}); // todo message and something else
           await shareScore(score);
           break;
         case GAME_STATE.LOST:
